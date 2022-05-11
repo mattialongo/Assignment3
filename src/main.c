@@ -1,7 +1,13 @@
-/*
- * Group 8 - Bego Giacomo - Longo Mattia - 2022/05
+/** @file main.c
+ * @brief contains the the implementation of the Assignment3
  *
- * Assignment 3 - Vending Machine
+ * The goal of this code is to implement the state
+ * machine of an automatic vending machine.
+ * In particular, this file contains the main() function
+ * 
+ * @author Mattia Longo and Giacomo Bego
+ * @date 11 May 2022
+ * @bug No known bugs
  */
 
 #include <zephyr.h>
@@ -106,6 +112,19 @@ void but8press_cbfunction(){
     //printk("1 euro inserted \n"); // button 4 hit !    
     c100 = 1;
 }
+
+
+/**
+ * @brief main functions run the state machine
+ *
+ * main function implement the state machine in 
+ * assignment 3. The input are 8 switchs that 
+ * simulate the insert of coins, product change,
+ * product selec and return coins. 
+ * 
+ * @return main() always return 0
+ */
+
 
 void main(void) {
 
@@ -307,9 +326,8 @@ void main(void) {
 void dispensing_superstate(){
 
   int16_t state1=COMPARISON;
-  bool done=false;
 
-  while(!done){
+  while(1){
     switch(state1){
       case COMPARISON:
       	if(sel_prod==1 && credit>=beerCost) { state1=OK; }
@@ -346,4 +364,12 @@ void dispensing_superstate(){
   	}
         state1=DISPENSE;
       break;
+      
+      case DISPENSE:
+        return;
+      break;
+      }
+     }
+     return;
+}
     
