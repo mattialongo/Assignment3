@@ -1,0 +1,268 @@
+\hypertarget{main_8c}{}\doxysection{src/main.c File Reference}
+\label{main_8c}\index{src/main.c@{src/main.c}}
+
+
+Contains the the implementation of the Assignment3.  
+
+
+{\ttfamily \#include $<$zephyr.\+h$>$}\newline
+{\ttfamily \#include $<$device.\+h$>$}\newline
+{\ttfamily \#include $<$devicetree.\+h$>$}\newline
+{\ttfamily \#include $<$drivers/gpio.\+h$>$}\newline
+{\ttfamily \#include $<$sys/printk.\+h$>$}\newline
+{\ttfamily \#include $<$sys/\+\_\+\+\_\+assert.\+h$>$}\newline
+{\ttfamily \#include $<$string.\+h$>$}\newline
+{\ttfamily \#include $<$timing/timing.\+h$>$}\newline
+{\ttfamily \#include $<$stdio.\+h$>$}\newline
+Include dependency graph for main.\+c\+:
+% FIG 0
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{main_8c_a3a47b19b66290aa414c508fe6f5039c4}\label{main_8c_a3a47b19b66290aa414c508fe6f5039c4}} 
+\#define {\bfseries SLEEP\+\_\+\+MS}~5 /$\ast$ Blink period in ms$\ast$/
+\item 
+\mbox{\Hypertarget{main_8c_a9c21a7caee326d7803b94ae1952b27ca}\label{main_8c_a9c21a7caee326d7803b94ae1952b27ca}} 
+\#define {\bfseries IDLE}~0
+\item 
+\mbox{\Hypertarget{main_8c_a569291abcc944166921b8cec7289177d}\label{main_8c_a569291abcc944166921b8cec7289177d}} 
+\#define {\bfseries BROWSE\+\_\+\+UP}~1
+\item 
+\mbox{\Hypertarget{main_8c_af6bad551424c4afa2f3195d8afd6efab}\label{main_8c_af6bad551424c4afa2f3195d8afd6efab}} 
+\#define {\bfseries BROWSE\+\_\+\+DOWN}~2
+\item 
+\mbox{\Hypertarget{main_8c_a2c9361d9b9e62d2fbab2a5a39d08236b}\label{main_8c_a2c9361d9b9e62d2fbab2a5a39d08236b}} 
+\#define {\bfseries DISPENSING}~3
+\item 
+\mbox{\Hypertarget{main_8c_aea84ee3889c2cacde4ed3ac2e8c52032}\label{main_8c_aea84ee3889c2cacde4ed3ac2e8c52032}} 
+\#define {\bfseries RETURNING}~4
+\item 
+\mbox{\Hypertarget{main_8c_afde821226543b40e2234958e718d033f}\label{main_8c_afde821226543b40e2234958e718d033f}} 
+\#define {\bfseries CENT10}~5
+\item 
+\mbox{\Hypertarget{main_8c_a4a2733e60c886676979b3ba6bb0ee3f4}\label{main_8c_a4a2733e60c886676979b3ba6bb0ee3f4}} 
+\#define {\bfseries CENT20}~6
+\item 
+\mbox{\Hypertarget{main_8c_a9ffb833f4ea6a376d4428e953552e528}\label{main_8c_a9ffb833f4ea6a376d4428e953552e528}} 
+\#define {\bfseries CENT50}~7
+\item 
+\mbox{\Hypertarget{main_8c_a1374d7194139d944dd55b1e8a09ed2e5}\label{main_8c_a1374d7194139d944dd55b1e8a09ed2e5}} 
+\#define {\bfseries CENT100}~8
+\item 
+\mbox{\Hypertarget{main_8c_ad5ae406e99b3f1cc3d1c8adeafe80cb8}\label{main_8c_ad5ae406e99b3f1cc3d1c8adeafe80cb8}} 
+\#define {\bfseries COMPARISON}~1
+\item 
+\mbox{\Hypertarget{main_8c_a8fe83ac76edc595f6b98cd4a4127aed5}\label{main_8c_a8fe83ac76edc595f6b98cd4a4127aed5}} 
+\#define {\bfseries ERROR}~2
+\item 
+\mbox{\Hypertarget{main_8c_aba51915c87d64af47fb1cc59348961c9}\label{main_8c_aba51915c87d64af47fb1cc59348961c9}} 
+\#define {\bfseries OK}~3
+\item 
+\mbox{\Hypertarget{main_8c_a9006ca8a2e356cc01884ad2ad5dbc97f}\label{main_8c_a9006ca8a2e356cc01884ad2ad5dbc97f}} 
+\#define {\bfseries DISPENSE}~4
+\item 
+\mbox{\Hypertarget{main_8c_a4c0e6f34369bef1deb3a9efae6ac14fb}\label{main_8c_a4c0e6f34369bef1deb3a9efae6ac14fb}} 
+\#define {\bfseries GPIO0\+\_\+\+NID}~DT\+\_\+\+NODELABEL(gpio0)
+\item 
+\mbox{\Hypertarget{main_8c_ad3c05b8933cd253785fdd123f6dbfc18}\label{main_8c_ad3c05b8933cd253785fdd123f6dbfc18}} 
+\#define {\bfseries BOARDBUT1}~0xb /$\ast$ Pin at which BUT1 is connected. Addressing is direct (i.\+e., pin number) $\ast$/
+\item 
+\mbox{\Hypertarget{main_8c_a590d906828bd5948fafbef47dc1c3b0c}\label{main_8c_a590d906828bd5948fafbef47dc1c3b0c}} 
+\#define {\bfseries BOARDBUT2}~0xc /$\ast$ Pin at which BUT2 is connected. Addressing is direct (i.\+e., pin number) $\ast$/
+\item 
+\mbox{\Hypertarget{main_8c_a2e82ac21050552495e5a8551178bf258}\label{main_8c_a2e82ac21050552495e5a8551178bf258}} 
+\#define {\bfseries BOARDBUT3}~0x18 /$\ast$ Pin at which BUT3 is connected. Addressing is direct (i.\+e., pin number) $\ast$/
+\item 
+\mbox{\Hypertarget{main_8c_abee96e1280405ff973ee2b6b07eec104}\label{main_8c_abee96e1280405ff973ee2b6b07eec104}} 
+\#define {\bfseries BOARDBUT4}~0x19 /$\ast$ Pin at which BUT4 is connected. Addressing is direct (i.\+e., pin number) $\ast$/
+\item 
+\mbox{\Hypertarget{main_8c_a6c8f70d52de27690d00e5abc5a9af9a6}\label{main_8c_a6c8f70d52de27690d00e5abc5a9af9a6}} 
+\#define {\bfseries BOARDBUT5}~0x3 /$\ast$ Pin at which BUT5 is connected. Addressing is direct (i.\+e., pin number) $\ast$/
+\item 
+\mbox{\Hypertarget{main_8c_af667030807737584d19b445db1eb5e28}\label{main_8c_af667030807737584d19b445db1eb5e28}} 
+\#define {\bfseries BOARDBUT6}~0x4 /$\ast$ Pin at which BUT6 is connected. Addressing is direct (i.\+e., pin number) $\ast$/
+\item 
+\mbox{\Hypertarget{main_8c_a802576d7763a8d847c79cca4cad9de7d}\label{main_8c_a802576d7763a8d847c79cca4cad9de7d}} 
+\#define {\bfseries BOARDBUT7}~0x1C /$\ast$ Pin at which BUT7 is connected. Addressing is direct (i.\+e., pin number) $\ast$/
+\item 
+\mbox{\Hypertarget{main_8c_aca5ef79d56764db4312b35a8b5924bee}\label{main_8c_aca5ef79d56764db4312b35a8b5924bee}} 
+\#define {\bfseries BOARDBUT8}~0x1D /$\ast$ Pin at which BUT8 is connected. Addressing is direct (i.\+e., pin number) $\ast$/
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{main_8c_aebf2d34f072541c364197e22fbe860c1}{but1press\+\_\+cbfunction}} ()
+\begin{DoxyCompactList}\small\item\em but1press\+\_\+cbfunction function run ISR for browse up \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{main_8c_ade623fb239fed3e88e7df042a34c9a73}{but2press\+\_\+cbfunction}} ()
+\begin{DoxyCompactList}\small\item\em but2press\+\_\+cbfunction function run ISR for browse down \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{main_8c_a12f2a8ee68ac40b30682635dcdb9d814}{but3press\+\_\+cbfunction}} ()
+\begin{DoxyCompactList}\small\item\em but3press\+\_\+cbfunction function run ISR for changing product \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{main_8c_a3759a143505ebd2ace97ac6f02d05ab3}{but4press\+\_\+cbfunction}} ()
+\begin{DoxyCompactList}\small\item\em but4press\+\_\+cbfunction function run ISR for returning credit \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{main_8c_af8bbd703e9baf32cd001c93697bc6d63}{but5press\+\_\+cbfunction}} ()
+\begin{DoxyCompactList}\small\item\em but5press\+\_\+cbfunction function run ISR for insert 10 cents \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{main_8c_a02336aa4079bf575ebf2663b07d2ad3b}{but6press\+\_\+cbfunction}} ()
+\begin{DoxyCompactList}\small\item\em but6press\+\_\+cbfunction function run ISR for insert 20 cents \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{main_8c_a1041367ec10ebab6f5ffbc8339726096}{but7press\+\_\+cbfunction}} ()
+\begin{DoxyCompactList}\small\item\em but5press\+\_\+cbfunction function run ISR for insert 50 cents \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{main_8c_a9ed8b9ed1cd88a92c84d610dc11c8815}{but8press\+\_\+cbfunction}} ()
+\begin{DoxyCompactList}\small\item\em but8press\+\_\+cbfunction function run ISR for insert 1 EUR \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{main_8c_a6288eba0f8e8ad3ab1544ad731eb7667}{main}} (void)
+\begin{DoxyCompactList}\small\item\em main function run the state machine \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{main_8c_af7e697a2172d6f9eb3a5c57a1083920c}{dispensing\+\_\+superstate}} ()
+\begin{DoxyCompactList}\small\item\em dispensing\+\_\+superstate implement the dispensing procedure \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{main_8c_a6fff52e113aad1a4feb17c9a6567f8d5}\label{main_8c_a6fff52e113aad1a4feb17c9a6567f8d5}} 
+const int {\bfseries beer\+Cost} =150
+\item 
+\mbox{\Hypertarget{main_8c_ad5fec9331f7dc84001c506c4272096f5}\label{main_8c_ad5fec9331f7dc84001c506c4272096f5}} 
+const int {\bfseries tuna\+Sandwich\+Cost} =100
+\item 
+\mbox{\Hypertarget{main_8c_a5eb2cfeae742bed646b44a3a98f134da}\label{main_8c_a5eb2cfeae742bed646b44a3a98f134da}} 
+const int {\bfseries coffee\+Cost} =50
+\item 
+\mbox{\Hypertarget{main_8c_a8e7150c0aea2a76b464fdd9c7117cb02}\label{main_8c_a8e7150c0aea2a76b464fdd9c7117cb02}} 
+volatile bool {\bfseries up} = 0
+\item 
+\mbox{\Hypertarget{main_8c_a7a8ef290e3747f284e7ce226ddd821bc}\label{main_8c_a7a8ef290e3747f284e7ce226ddd821bc}} 
+volatile bool {\bfseries down} = 0
+\item 
+\mbox{\Hypertarget{main_8c_a2dbf1b92998f31cee39ca854e94faabb}\label{main_8c_a2dbf1b92998f31cee39ca854e94faabb}} 
+volatile bool {\bfseries select} = 0
+\item 
+\mbox{\Hypertarget{main_8c_a4ef6174627a7cb941e66eced8bdbbe68}\label{main_8c_a4ef6174627a7cb941e66eced8bdbbe68}} 
+volatile bool {\bfseries c\+\_\+return} = 0
+\item 
+\mbox{\Hypertarget{main_8c_abf6c0969b05968795a4d9d85fcf80f98}\label{main_8c_abf6c0969b05968795a4d9d85fcf80f98}} 
+volatile bool {\bfseries c10} = 0
+\item 
+\mbox{\Hypertarget{main_8c_a7d84b2bf958e5e6192ee860fb64cbfdf}\label{main_8c_a7d84b2bf958e5e6192ee860fb64cbfdf}} 
+volatile bool {\bfseries c20} = 0
+\item 
+\mbox{\Hypertarget{main_8c_a63c18a7bee885a56d199389cd8b81e2e}\label{main_8c_a63c18a7bee885a56d199389cd8b81e2e}} 
+volatile bool {\bfseries c50} = 0
+\item 
+\mbox{\Hypertarget{main_8c_a375b91ff60f680fe83aaaf0fcb8c9d1a}\label{main_8c_a375b91ff60f680fe83aaaf0fcb8c9d1a}} 
+volatile bool {\bfseries c100} = 0
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Contains the the implementation of the Assignment3. 
+
+The goal of this code is to implement the state machine of an automatic vending machine. In particular, this file contains the \mbox{\hyperlink{main_8c_a6288eba0f8e8ad3ab1544ad731eb7667}{main()}} function
+
+\begin{DoxyAuthor}{Author}
+Mattia Longo and Giacomo Bego 
+\end{DoxyAuthor}
+\begin{DoxyDate}{Date}
+17 May 2022 
+\end{DoxyDate}
+\begin{DoxyRefDesc}{Bug}
+\item[\mbox{\hyperlink{bug__bug000001}{Bug}}]No known bugs \end{DoxyRefDesc}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{main_8c_aebf2d34f072541c364197e22fbe860c1}\label{main_8c_aebf2d34f072541c364197e22fbe860c1}} 
+\index{main.c@{main.c}!but1press\_cbfunction@{but1press\_cbfunction}}
+\index{but1press\_cbfunction@{but1press\_cbfunction}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{but1press\_cbfunction()}{but1press\_cbfunction()}}
+{\footnotesize\ttfamily void but1press\+\_\+cbfunction (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+but1press\+\_\+cbfunction function run ISR for browse up 
+
+but1press\+\_\+cbfunction is the service routine related to the interrupt for browsing up. It just change the state of the volatile \char`\"{}up\char`\"{} variable \mbox{\Hypertarget{main_8c_ade623fb239fed3e88e7df042a34c9a73}\label{main_8c_ade623fb239fed3e88e7df042a34c9a73}} 
+\index{main.c@{main.c}!but2press\_cbfunction@{but2press\_cbfunction}}
+\index{but2press\_cbfunction@{but2press\_cbfunction}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{but2press\_cbfunction()}{but2press\_cbfunction()}}
+{\footnotesize\ttfamily void but2press\+\_\+cbfunction (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+but2press\+\_\+cbfunction function run ISR for browse down 
+
+but2press\+\_\+cbfunction is the service routine related to the interrupt for browsing down. It just change the state of the volatile \char`\"{}down\char`\"{} variable \mbox{\Hypertarget{main_8c_a12f2a8ee68ac40b30682635dcdb9d814}\label{main_8c_a12f2a8ee68ac40b30682635dcdb9d814}} 
+\index{main.c@{main.c}!but3press\_cbfunction@{but3press\_cbfunction}}
+\index{but3press\_cbfunction@{but3press\_cbfunction}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{but3press\_cbfunction()}{but3press\_cbfunction()}}
+{\footnotesize\ttfamily void but3press\+\_\+cbfunction (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+but3press\+\_\+cbfunction function run ISR for changing product 
+
+but3press\+\_\+cbfunction is the service routine related to the interrupt for changing product. It just modify the state of the volatile \char`\"{}select\char`\"{} variable \mbox{\Hypertarget{main_8c_a3759a143505ebd2ace97ac6f02d05ab3}\label{main_8c_a3759a143505ebd2ace97ac6f02d05ab3}} 
+\index{main.c@{main.c}!but4press\_cbfunction@{but4press\_cbfunction}}
+\index{but4press\_cbfunction@{but4press\_cbfunction}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{but4press\_cbfunction()}{but4press\_cbfunction()}}
+{\footnotesize\ttfamily void but4press\+\_\+cbfunction (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+but4press\+\_\+cbfunction function run ISR for returning credit 
+
+but4press\+\_\+cbfunction is the service routine related to the interrupt for returning credit. It just modify the state of the volatile \char`\"{}c\+\_\+return\char`\"{} variable \mbox{\Hypertarget{main_8c_af8bbd703e9baf32cd001c93697bc6d63}\label{main_8c_af8bbd703e9baf32cd001c93697bc6d63}} 
+\index{main.c@{main.c}!but5press\_cbfunction@{but5press\_cbfunction}}
+\index{but5press\_cbfunction@{but5press\_cbfunction}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{but5press\_cbfunction()}{but5press\_cbfunction()}}
+{\footnotesize\ttfamily void but5press\+\_\+cbfunction (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+but5press\+\_\+cbfunction function run ISR for insert 10 cents 
+
+but5press\+\_\+cbfunction is the service routine related to the interrupt for increment the credit of 10 cents. It just modify he state of the volatile \char`\"{}c10\char`\"{} variable \mbox{\Hypertarget{main_8c_a02336aa4079bf575ebf2663b07d2ad3b}\label{main_8c_a02336aa4079bf575ebf2663b07d2ad3b}} 
+\index{main.c@{main.c}!but6press\_cbfunction@{but6press\_cbfunction}}
+\index{but6press\_cbfunction@{but6press\_cbfunction}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{but6press\_cbfunction()}{but6press\_cbfunction()}}
+{\footnotesize\ttfamily void but6press\+\_\+cbfunction (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+but6press\+\_\+cbfunction function run ISR for insert 20 cents 
+
+but6press\+\_\+cbfunction is the service routine related to the interrupt for increment the credit of 20 cents. It just modify he state of the volatile \char`\"{}c20\char`\"{} variable \mbox{\Hypertarget{main_8c_a1041367ec10ebab6f5ffbc8339726096}\label{main_8c_a1041367ec10ebab6f5ffbc8339726096}} 
+\index{main.c@{main.c}!but7press\_cbfunction@{but7press\_cbfunction}}
+\index{but7press\_cbfunction@{but7press\_cbfunction}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{but7press\_cbfunction()}{but7press\_cbfunction()}}
+{\footnotesize\ttfamily void but7press\+\_\+cbfunction (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+but5press\+\_\+cbfunction function run ISR for insert 50 cents 
+
+but7press\+\_\+cbfunction is the service routine related to the interrupt for increment the credit of 50 cents. It just modify he state of the volatile \char`\"{}c50\char`\"{} variable \mbox{\Hypertarget{main_8c_a9ed8b9ed1cd88a92c84d610dc11c8815}\label{main_8c_a9ed8b9ed1cd88a92c84d610dc11c8815}} 
+\index{main.c@{main.c}!but8press\_cbfunction@{but8press\_cbfunction}}
+\index{but8press\_cbfunction@{but8press\_cbfunction}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{but8press\_cbfunction()}{but8press\_cbfunction()}}
+{\footnotesize\ttfamily void but8press\+\_\+cbfunction (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+but8press\+\_\+cbfunction function run ISR for insert 1 EUR 
+
+but8press\+\_\+cbfunction is the service routine related to the interrupt for increment the credit of 1 EUR. It just modify he state of the volatile \char`\"{}c100\char`\"{} variable \mbox{\Hypertarget{main_8c_af7e697a2172d6f9eb3a5c57a1083920c}\label{main_8c_af7e697a2172d6f9eb3a5c57a1083920c}} 
+\index{main.c@{main.c}!dispensing\_superstate@{dispensing\_superstate}}
+\index{dispensing\_superstate@{dispensing\_superstate}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{dispensing\_superstate()}{dispensing\_superstate()}}
+{\footnotesize\ttfamily void dispensing\+\_\+superstate (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+dispensing\+\_\+superstate implement the dispensing procedure 
+
+dispensing\+\_\+superstate is the function that go to implement the inner state machine for dispensing the product \mbox{\Hypertarget{main_8c_a6288eba0f8e8ad3ab1544ad731eb7667}\label{main_8c_a6288eba0f8e8ad3ab1544ad731eb7667}} 
+\index{main.c@{main.c}!main@{main}}
+\index{main@{main}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{main()}{main()}}
+{\footnotesize\ttfamily void main (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+
+
+main function run the state machine 
+
+main function implement the state machine in assignment 3. The input are 8 switchs that simulate the insert of coins, product change, product selec and return coins. 
