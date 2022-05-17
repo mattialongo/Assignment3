@@ -1,12 +1,12 @@
 /** @file main.c
- * @brief contains the the implementation of the Assignment3
+ * @brief Contains the the implementation of the Assignment3
  *
  * The goal of this code is to implement the state
  * machine of an automatic vending machine.
  * In particular, this file contains the main() function
  * 
  * @author Mattia Longo and Giacomo Bego
- * @date 11 May 2022
+ * @date 17 May 2022
  * @bug No known bugs
  */
 
@@ -80,34 +80,126 @@ volatile bool c20 = 0; /* Flag to signal a BUT6 press */
 volatile bool c50 = 0; /* Flag to signal a BUT7 press */
 volatile bool c100 = 0; /* Flag to signal a BUT8 press */
 
+
+/**
+ * @brief but1press_cbfunction function run ISR for browse up
+ *
+ * but1press_cbfunction is the service
+ * routine related to the interrupt
+ * for browsing up. It just change
+ * the state of the volatile "up" variable
+ * 
+ */
+
 void but1press_cbfunction(){
     //printk("UP product\n"); // button 1 hit !    
     up = 1;
 }
+
+/**
+ * @brief but2press_cbfunction function run ISR for browse down
+ *
+ * but2press_cbfunction is the service
+ * routine related to the interrupt
+ * for browsing down. It just change
+ * the state of the volatile "down" variable
+ * 
+ */
+
 void but2press_cbfunction(){
     //printk("DOWN product\n"); // button 2 hit !    
     down = 1;
 }
+
+/**
+ * @brief but3press_cbfunction function run ISR for changing product
+ *
+ * but3press_cbfunction is the service
+ * routine related to the interrupt
+ * for changing product. It just modify
+ * the state of the volatile "select" variable
+ * 
+ */
+
 void but3press_cbfunction(){
     //printk("PRODUCT SELECTED\n"); // button 3 hit !    
     select = 1;
 }
+
+/**
+ * @brief but4press_cbfunction function run ISR for returning credit
+ *
+ * but4press_cbfunction is the service
+ * routine related to the interrupt
+ * for returning credit. It just modify
+ * the state of the volatile "c_return" variable
+ * 
+ */
+
 void but4press_cbfunction(){
     //printk("RETURNING REQUEST ACTIVATED\n"); // button 4 hit !    
     c_return = 1;
 }
+
+/**
+ * @brief but5press_cbfunction function run ISR for insert 10 cents
+ *
+ * but5press_cbfunction is the service
+ * routine related to the interrupt
+ * for increment the credit of 10 cents. 
+ * It just modify he state of the 
+ * volatile "c10" variable
+ * 
+ */
+
 void but5press_cbfunction(){
     //printk("10cent inserted\n"); // button 4 hit !    
     c10 = 1;
 }
+
+/**
+ * @brief but6press_cbfunction function run ISR for insert 20 cents
+ *
+ * but6press_cbfunction is the service
+ * routine related to the interrupt
+ * for increment the credit of 20 cents. 
+ * It just modify he state of the 
+ * volatile "c20" variable
+ * 
+ */
+
 void but6press_cbfunction(){
     //printk("20 cent inserted\n"); // button 4 hit !    
     c20 = 1;
 }
+
+/**
+ * @brief but5press_cbfunction function run ISR for insert 50 cents
+ *
+ * but7press_cbfunction is the service
+ * routine related to the interrupt
+ * for increment the credit of 50 cents. 
+ * It just modify he state of the 
+ * volatile "c50" variable
+ * 
+ */
+
 void but7press_cbfunction(){
     //printk("50cent inserted\n"); // button 4 hit !    
     c50 = 1;
 }
+
+/**
+ * @brief but8press_cbfunction function run ISR for insert 1 EUR
+ *
+ * but8press_cbfunction is the service
+ * routine related to the interrupt
+ * for increment the credit of 1 EUR. 
+ * It just modify he state of the 
+ * volatile "c100" variable
+ * 
+ */
+
 void but8press_cbfunction(){
     //printk("1 euro inserted \n"); // button 4 hit !    
     c100 = 1;
@@ -115,16 +207,14 @@ void but8press_cbfunction(){
 
 
 /**
- * @brief main functions run the state machine
+ * @brief main function run the state machine
  *
  * main function implement the state machine in 
  * assignment 3. The input are 8 switchs that 
  * simulate the insert of coins, product change,
  * product selec and return coins. 
  * 
- * @return main() always return 0
  */
-
 
 void main(void) {
 
@@ -319,9 +409,19 @@ void main(void) {
       k_msleep(SLEEP_MS);
     }/*while(1)*/
   return;
-}
+}/*void main(void)*/
 
 
+/**
+ * @brief dispensing_superstate implement the dispensing procedure
+ *
+ * dispensing_superstate is the function
+ * that go to implement the inner state
+ * machine for dispensing the product
+ *
+ */
+ 
+ 
 /*Implementation of Dispesing superstate*/
 void dispensing_superstate(){
 
