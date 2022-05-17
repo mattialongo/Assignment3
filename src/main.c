@@ -341,12 +341,12 @@ void main(void) {
   	else if(sel_prod==3){
     	printk("Coffee: 0.50 EUR\n");
   	}
-  	printk("Credit: %d\n\r",credit);
+	printk("Credit: %d.%d EUR\n",credit/100,credit%100);
         state=IDLE;
       break;
 
       case BROWSE_DOWN:
-      down=0;
+      	down=0;
         if(sel_prod>1){
             sel_prod=sel_prod-1;
         }
@@ -360,7 +360,7 @@ void main(void) {
   	else if(sel_prod==3){
     	printk("Coffee: 0.50 EUR\n");
   	}
-  	printk("Credit: %d\n\r",credit);
+  	printk("Credit: %d.%d EUR\n",credit/100,credit%100);
         state=IDLE;
       break;
 
@@ -371,36 +371,36 @@ void main(void) {
       break;
 
       case CENT10:
-      c10=0;
+      	c10=0;
       	credit=credit+10;
-      	printk("Credit: %d\n\r",credit);
+      	printk("Credit: %d.%d EUR\n",credit/100,credit%100);
       	state=IDLE;
       break;
       
       case CENT20:
-      c20=0;
+      	c20=0;
       	credit=credit+20;
-      	printk("Credit: %d\n\r",credit);
+      	printk("Credit: %d.%d EUR\n",credit/100,credit%100);
       	state=IDLE;
       break;
       
       case CENT50:
-      c50=0;
+      	c50=0;
       	credit=credit+50;
-      	printk("Credit: %d\n\r",credit);
+      	printk("Credit: %d.%d EUR\n",credit/100,credit%100);
       	state=IDLE;
       break;
       
       case CENT100:
-      c100=0;
+      	c100=0;
       	credit=credit+100;
-      	printk("Credit: %d\n\r",credit);
+      	printk("Credit: %d.%d EUR\n",credit/100,credit%100);
       	state=IDLE;
       break;
 
       case RETURNING:
-      c_return=0;
-        printk("%d EUR credit return \n",credit);
+      	c_return=0;
+        printk("%d.%d EUR credit return\n",credit/100,credit%100);
         credit=0;
         state=IDLE;
       break;
@@ -437,14 +437,14 @@ void dispensing_superstate(){
       break;
       
       case ERROR:
-        if(sel_prod==1){
-    	  printk("Not enough credit, product Beer cost 1.50 EUR, credit is %d\n",credit);
+        if(sel_prod==1){ 
+        	printk("Not enough credit, product Beer cost 1.50 EUR, credit is %d.%d EUR\n",credit/100,credit%100);
   	}
   	else if(sel_prod==2){
-    	  printk("Not enough credit, product Tuna sandwich cost 1.00 EUR, credit is %d\n",credit);
+		printk("Not enough credit, product Tuna sandwich cost 1.00 EUR, credit is %d.%d EUR\n",credit/100,credit%100);
   	}
   	else if(sel_prod==3){
-    	  printk("Not enough credit, product Coffee cost 0.50 EUR, credit is %d\n",credit);
+		printk("Not enough credit, product Coffee cost 0.50 EUR, credit is %d.%d EUR\n",credit/100,credit%100);
   	}
         state1=DISPENSE;
       break;
@@ -452,15 +452,15 @@ void dispensing_superstate(){
       case OK:
         if(sel_prod==1){
     	  credit=credit-150;
-          printk("Product Beer dispensed, remaining credit %d\n",credit);
+          printk("Product Beer dispensed, remaining credit %d.%d EUR\n",credit/100,credit%100);
   	}
   	else if(sel_prod==2){
           credit=credit-100;
-    	  printk("Product Tuna Sandwich dispensed, remaining credit %d\n",credit);
+    	  printk("Product Tuna Sandwich dispensed, remaining credit %d.%d EUR\n",credit/100,credit%100);
   	}
   	else if(sel_prod==3){
           credit=credit-50;
-    	  printk("Product Coffee dispensed, remaining credit %d\n",credit);
+    	  printk("Product Coffee dispensed, remaining credit %d.%d EUR\n",credit/100,credit%100);
   	}
         state1=DISPENSE;
       break;
